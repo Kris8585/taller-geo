@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GeoService } from 'src/app/services/geo/geo.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-map',
@@ -10,6 +11,8 @@ export class MapComponent implements OnInit {
 
   latitude: number
   longitude: number
+  markers: any
+  subscription: Subscription
 
   icon = {
     url: "https://cdn4.iconfinder.com/data/icons/logos-and-brands/512/21_Angular_logo_logos-512.png",
@@ -18,10 +21,17 @@ export class MapComponent implements OnInit {
       height: 20
     }
   }
-constructor(private geoService:GeoService){}
+  constructor(private geoService: GeoService) { }
 
- ngOnInit() {
+  ngOnInit() {
     this.getUserLocation()
+    this.subscription = this.geoService.nearGeoPoints.subscribe(points => {
+      this.markers = points
+    })
+    
+  }
+  ngOnDestroy() {
+    this.subscription.unsubscribe()
   }
 
 
@@ -35,7 +45,7 @@ constructor(private geoService:GeoService){}
     }
   }
 
- 
+
 
 
 }

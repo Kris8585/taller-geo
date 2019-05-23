@@ -35,7 +35,6 @@ export class GeoService {
 
 
   filterLocations(radius: number, coords: Array<number>) {
-    this.nearGeoPoints.next([])
     this.geoFire.query({
       center: coords,
       radius: radius
@@ -51,6 +50,5 @@ export class GeoService {
         this.nearGeoPoints.next(currentPoints)
       })
   }
-
 
 }

@@ -1,4 +1,27 @@
 <div *ngIf="latitude && longitude">
+    <div id="floating-card" class="card mt-3 ml-3 card-over">
+        <img src="assets/bg.jpg" class="card-img-top" alt="taller geofire">
+        <div class="card-body">
+            <h5 class="card-title"> <strong>UNA |</strong> Taller geofire</h5>
+            <p class="card-text">App de geolocalización utilizando firebase, geofire y agm con angular.</p>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <div class="form-group">
+                    <label for="rangeSearch">Radio de búsqueda</label>
+                    <input [(ngModel)]="rangeSearch" (change)="changeRange()" type="range" class="form-control-range" id="rangeSearch">
+                </div>
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" [(ngModel)]="showRadio" class="custom-control-input" id="showRadio">
+                    <label class="custom-control-label" for="showRadio">Mostrar radio</label>
+                </div>
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" [(ngModel)]="moveRadio" class="custom-control-input" id="moveRadio">
+                    <label class="custom-control-label" for="moveRadio">Mover Radio</label>
+                </div>
+            </li>
+        </ul>
+    </div>
     <agm-map [zoom]="11" [latitude]="latitude" [longitude]="longitude" #map name="map">
         <agm-marker [latitude]="latitude" [longitude]="longitude" [iconUrl]="icon">
             <agm-info-window>
@@ -6,5 +29,12 @@
                 <p>Estas aqui! latitud:{{latitude}}, longitud {{longitude}}</p>
             </agm-info-window>
         </agm-marker>
+        <agm-marker id="filteredPoints" *ngFor="let marker of markers" [latitude]="marker.location[0]" [longitude]="marker.location[1]">
+            <agm-info-window>
+                <h3>Punto encontrado</h3>
+                <p>Estas a {{ marker.distance }} kilometros desde este punto</p>
+            </agm-info-window>
+        </agm-marker>
+
     </agm-map>
 </div>
