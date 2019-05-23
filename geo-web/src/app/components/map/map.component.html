@@ -22,19 +22,25 @@
             </li>
         </ul>
     </div>
-    <agm-map [zoom]="11" [latitude]="latitude" [longitude]="longitude" #map name="map">
+
+    <agm-map (mapClick)="onMapClick($event)" [zoom]="11" [latitude]="latitude" [longitude]="longitude" #map name="map">
         <agm-marker [latitude]="latitude" [longitude]="longitude" [iconUrl]="icon">
             <agm-info-window>
                 <h3>Hola!</h3>
                 <p>Estas aqui! latitud:{{latitude}}, longitud {{longitude}}</p>
             </agm-info-window>
         </agm-marker>
-        <agm-marker id="filteredPoints" *ngFor="let marker of markers" [latitude]="marker.location[0]" [longitude]="marker.location[1]">
-            <agm-info-window>
+
+        <agm-marker id="filteredPoints" (markerClick)="onMarkerClick(iw)" *ngFor="let marker of markers" [latitude]="marker.location[0]" [longitude]="marker.location[1]">
+            <agm-info-window #iw>
                 <h3>Punto encontrado</h3>
                 <p>Estas a {{ marker.distance }} kilometros desde este punto</p>
             </agm-info-window>
         </agm-marker>
 
+        <agm-circle *ngIf="showRadio" (dragEnd)="centerChange($event)" [latitude]="latitudeSearch" [longitude]="longitudeSearch" [radius]="rangeSearch*3000" [fillOpacity]="0.2" [fillColor]=" 'blue'" [circleDraggable]="moveRadio" [editable]="false">
+        </agm-circle>
     </agm-map>
+
+
 </div>

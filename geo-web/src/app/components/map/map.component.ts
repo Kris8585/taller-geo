@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { GeoService } from 'src/app/services/geo/geo.service';
 import { Subscription } from 'rxjs';
+import { AgmInfoWindow } from '@agm/core';
 
 @Component({
   selector: 'app-map',
@@ -8,11 +9,19 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./map.component.css']
 })
 export class MapComponent implements OnInit {
-
+   
+  currentIW: AgmInfoWindow = null
+  previousIW: AgmInfoWindow = null
   latitude: number
   longitude: number
   markers: any
   subscription: Subscription
+  rangeSearch = 10
+  showRadio = true
+  moveRadio = false
+  longitudeSearch: number
+  latitudeSearch: number
+
 
   icon = {
     url: "https://cdn4.iconfinder.com/data/icons/logos-and-brands/512/21_Angular_logo_logos-512.png",
@@ -21,12 +30,13 @@ export class MapComponent implements OnInit {
       height: 20
     }
   }
-  constructor(private geoService: GeoService) { }
+  constructor(private geoService: GeoService, private changeDetectorRef:ChangeDetectorRef) { }
 
   ngOnInit() {
     this.getUserLocation()
     this.subscription = this.geoService.nearGeoPoints.subscribe(points => {
       this.markers = points
+      this.changeDetectorRef.detectChanges()
     })
     
   }
@@ -40,12 +50,39 @@ export class MapComponent implements OnInit {
       navigator.geolocation.getCurrentPosition(position => {
         this.latitude = position.coords.latitude
         this.longitude = position.coords.longitude
-        this.geoService.filterLocations(5000, [this.latitude, this.longitude])
+
+        this.latitudeSearch = this.latitude
+        this.longitudeSearch = this.longitude
+        this.geoService.filterLocations(this.rangeSearch * 3, [this.latitudeSearch, this.longitudeSearch])
       })
     }
   }
 
+  changeRange() {
+    this.previousIW=null
+    this.geoService.filterLocations(this.rangeSearch * 3, [this.latitudeSearch, this.longitudeSearch])
+  }
+  centerChange($event) {
+    this.previousIW=null
+    if ($event) {
+      this.latitudeSearch = $event.coords.lat
+      this.longitudeSearch = $event.coords.lng
+      this.geoService.filterLocations(this.rangeSearch * 3, [this.latitudeSearch, this.longitudeSearch])
+    }
+  }
+  onMapClick() {
+    if (this.previousIW) {
+      this.previousIW.close()
+    }
+  }
 
+  onMarkerClick(infoWindow: any) {
+    if (this.previousIW) {
+      this.currentIW = infoWindow
+      this.previousIW.close()
+    }
+    this.previousIW = infoWindow
+  }
 
 
 }
