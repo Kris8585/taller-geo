@@ -34,5 +34,23 @@ export class GeoService {
   }
 
 
+  filterLocations(radius: number, coords: Array<number>) {
+    this.nearGeoPoints.next([])
+    this.geoFire.query({
+      center: coords,
+      radius: radius
+    })
+      .on('key_entered', (key:string, location:number, distance:number) => {
+        let point = {
+          location: location,
+          distance: distance
+        }
+
+        let currentPoints = this.nearGeoPoints.value
+        currentPoints.push(point)
+        this.nearGeoPoints.next(currentPoints)
+      })
+  }
+
 
 }
