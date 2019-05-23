@@ -1,3 +1,4 @@
-<p>
-  map works!
-</p>
+<div *ngIf="latitude && longitude">
+    <agm-map [zoom]="11" [latitude]="latitude" [longitude]="longitude" #map name="map">
+    </agm-map>
+</div>

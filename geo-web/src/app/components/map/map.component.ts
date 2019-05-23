@@ -7,9 +7,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MapComponent implements OnInit {
 
-  constructor() { }
+  latitude: number
+  longitude: number
+constructor(){}
 
-  ngOnInit() {
+ ngOnInit() {
+    this.getUserLocation()
   }
+
+
+private getUserLocation() {
+this.latitude = 9.3383697
+this.longitude = -83.7575296
+}
+
 
 }
